@@ -2,43 +2,35 @@ import axios from "axios";
 import { useFormik } from "formik";
 import React, { useState } from "react";
 import { Oval } from "react-loader-spinner";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom"; // Import useParams
 import * as yup from "yup";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { togglePasswordVisibility } from "../Utils/Utils";
-import { RegisterUser } from "../Utils/api";
+import { ResetPasswordApi } from "../Utils/api";
 
-export default function Register() {
+export default function ResetPassword() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { randomString } = useParams(); // Get the random string from the URL
 
+  // Define a validation schema for the form
   const validation = yup.object({
-    firstName: yup.string().required("Enter First Name"),
-    lastName: yup.string().required("Enter Last Name"),
-    email: yup
-      .string()
-      .required("Email is required")
-      .email("Email is not valid"),
-    password: yup
-      .string()
-      .required("Password is required")
-      .matches(
-        /^[A-Z][a-z0-9]{5,10}$/,
-        "Password start with capital letter then from 5 to 10 letters or digits"
-      ),
+    password: yup.string().required("Password is required"),
   });
-  async function sendData(values) {
+
+  // Function to send updated password data to the server
+  async function sendUpdatedData() {
+    console.log("Working sendUpdatedData");
     setLoading(true);
     try {
-      const response = await RegisterUser(values);
-      const data = response.data;
-
+      // Replace ":randomString" with the extracted random string
+      const response= await ResetPasswordApi(formik.initialValues,randomString)
+      
+      console.log("response", response);
       setLoading(false);
-
-      // Handle successful registration
-      toast.success("Register Successfull. Reset Email Send.",  {
+      toast.success("Password Updated Successfully", {
         position: "top-right",
         autoClose: 1500,
         hideProgressBar: false,
@@ -49,14 +41,12 @@ export default function Register() {
         theme: "colored",
       });
 
+      // You can use navigate here if needed
       navigate("/login");
     } catch (err) {
-      // Handle errors
       setLoading(false);
-      const errorMessage = err.response?.data?.error || "Internal Server Error";
-      setError(errorMessage);
-
-      toast.error(errorMessage, {
+      setError("Random String is not valid");
+      toast.error("Random String is not valid", {
         position: "top-right",
         autoClose: 1500,
         hideProgressBar: false,
@@ -68,88 +58,47 @@ export default function Register() {
       });
     }
   }
+
+  // Initialize Formik
   const formik = useFormik({
     initialValues: {
-      username: "",
-      email: "",
       password: "",
     },
     validationSchema: validation,
-    onSubmit: sendData,
+    onSubmit: sendUpdatedData,
   });
-  function changeBgRegister() {
-    document.getElementById("changeR").classList.add("auth");
+
+  // Function to change background for the update password button
+  function changeBgUpdatePassword() {
+    document.getElementById("change").classList.add("auth");
+    console.log("Working changeBgUpdatePassword");
   }
+
   return (
     <>
       <div className="container min-vh-100 d-flex align-items-center justify-content-center py-5 py-md-0">
-        <div className="content row gx-0 logo">
+        <div className="content row gx-0 login">
           <div className="col-md-5">
             <div className="bg-main text-white h-100 d-flex align-items-center justify-content-center flex-column  text-center">
             <div className="card h-100 w-100" >
-  <img src="https://img.freepik.com/free-vector/global-data-security-personal-data-security-cyber-data-security-online-concept-illustration-internet-security-information-privacy-protection_1150-37336.jpg?w=740&t=st=1709703133~exp=1709703733~hmac=dfb84c38ffa99d94e50967b7efaca00b7399f0967333ffd2167b5b3d8a238484" className="card-img-top login-img" alt="..."/>
+  <img src="https://img.freepik.com/free-vector/reset-password-concept-illustration_114360-7966.jpg?t=st=1709704907~exp=1709708507~hmac=36f540ec8f23e6764f1c4098cd118b58fc27c87c282038579169abbc829ed492&w=740" className="card-img-top login-img" alt="..."/>
   
   <div className="card-body">  
-              <h2 className=" card-title mb-3 fw-bold">Already Registered?</h2>
-              <Link to="/login">
+              <h2 className=" card-title mb-3 fw-bold">Need An Account?</h2>
+              <Link to="/register">
                 <button className="btn btn-primary fw-bold rounded-pill py-2 px-4">
-                  Login
+                  Register
                 </button>
               </Link>
               </div>
-</div>
+</div>  
             </div>
           </div>
           <div className="col-md-7 bg-light">
             <div className="text-center p-5">
-              <h1 className="text-main fw-bolder">Create Account</h1>
+              <h1 className="text-main fw-bolder">Update Password</h1>
               <form onSubmit={formik.handleSubmit}>
                 {error ? <p className="text-danger ">{error}</p> : ""}
-                <input
-                  type="text"
-                  className="form-control mt-3"
-                  placeholder="Enter First Name"
-                  name="firstName"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
-                {formik.errors.firstName && formik.touched.firstName ? (
-                  <p className="fs-small ps-1 text-danger text-start">
-                    {formik.errors.firstName}
-                  </p>
-                ) : (
-                  ""
-                )}
-                <input
-                  type="text"
-                  className="form-control mt-3"
-                  placeholder="Enter Last Name"
-                  name="lastName"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
-                {formik.errors.lastName && formik.touched.lastName ? (
-                  <p className="fs-small ps-1 text-danger text-start">
-                    {formik.errors.lastName}
-                  </p>
-                ) : (
-                  ""
-                )}
-                <input
-                  type="email"
-                  className="form-control mt-3"
-                  placeholder="Enter Email"
-                  name="email"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
-                {formik.errors.email && formik.touched.email ? (
-                  <p className="fs-small ps-1 text-danger text-start">
-                    {formik.errors.email}
-                  </p>
-                ) : (
-                  ""
-                )}
                 <div className="position-relative">
                   <input
                     id="password-input"
@@ -157,11 +106,12 @@ export default function Register() {
                     className="form-control mt-3"
                     placeholder="Enter Password"
                     name="password"
+                    value={formik.values.password}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   />
                   <i
-                    onClick={() => togglePasswordVisibility()}
+                    onClick={togglePasswordVisibility}
                     className="fa-regular fa-eye-slash eyeIcon"
                   ></i>
                 </div>
@@ -173,8 +123,8 @@ export default function Register() {
                   ""
                 )}
                 <button
-                  onClick={() => changeBgRegister()}
-                  id="changeR"
+                  onClick={changeBgUpdatePassword}
+                  id="change"
                   type="submit"
                   className="btn-style text-center mt-3 w-100"
                 >
@@ -194,7 +144,7 @@ export default function Register() {
                       />
                     </div>
                   ) : (
-                    "Register"
+                    "Update Password"
                   )}
                 </button>
               </form>
