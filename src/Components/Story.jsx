@@ -12,7 +12,7 @@ export default function Story({
   author,
 }) {
   return (
-    <div className="story">
+    <div className="story border border-dark">
       <div className="image">
         <Link to={`/story/${_id}`}>
           <img src={image} alt={title} />

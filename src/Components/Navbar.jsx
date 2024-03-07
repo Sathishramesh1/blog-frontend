@@ -54,7 +54,7 @@ const Navbar = () => {
         </Link>
         {isAuthenticated && (
           <Link to="/createStory" className="nav-link">
-            Add Story
+            Add Blog
           </Link>
         )}
         <button

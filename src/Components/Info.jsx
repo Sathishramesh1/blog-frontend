@@ -31,14 +31,12 @@ export default function Info() {
       <div className="container min-vh-100 d-flex align-items-center justify-content-center py-5 py-md-0">
         <div className="col-md-7 bg-light">
           <div className="text-center p-5">
-            <img src="/applogo.png" alt="Your Logo" width="350" height="350" />
+            <img src="https://img.freepik.com/free-vector/organic-flat-blog-post-illustration-with-people_23-2148955260.jpg?w=900&t=st=1709747458~exp=1709748058~hmac=06deb0eee1cfc0b744c2ecacdf684ea051f1bce8947bfa5af1c2c32c8c29823f" alt="Your Logo" width="350" height="350" />
             <h1 className="text-main fw-bolder">
-              Welcome to Aspire Kaleidoscope!
+              Welcome to Blog-Bytes
             </h1>
             <p>
-              This application is designed for creating and sharing stories in a
-              blog format, as well as offering various additional features to
-              enhance your writing experience.
+             This is simple Blog Application
             </p>
             {loading ? (
               <div className="d-flex justify-content-center">
@@ -54,7 +52,7 @@ export default function Info() {
               </div>
             ) : (
               <p className="text-success" style={{ fontSize: "24px" }}>
-                Aspire More!
+                {/* Aspire More! */}
               </p>
             )}
           </div>

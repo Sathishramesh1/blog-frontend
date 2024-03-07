@@ -3,13 +3,14 @@ import { Container } from "react-bootstrap";
 import axios from "axios";
 import Story from "./Story";
 import { GetAllStoryApi } from "../Utils/api";
+import { BounceLoader } from "react-spinners";
 
 const BlogHome = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch blog posts from your backend API
+    
 
 const fetchData=async()=>{
   try {
@@ -28,13 +29,17 @@ const fetchData=async()=>{
   }, []);
 
   return (
-    <Container>
-      <h1>All Stories</h1>
+    <Container className="">
+      <h1>All Blog</h1>
       {loading ? (
-        <p>Loading...</p>
+       
+    <div sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', position: 'fixed', width: '100%', backgroundColor: 'rgba(255, 255, 255, 0.5)', zIndex: 9999 }}>
+      <BounceLoader color="#36d7b7" loading={loading} size={200} />
+    </div>
       ) : (
         <div>
           {Array.isArray(posts) && posts.length > 0 ? (
+            
             posts.map((post) => <Story key={post._id} {...post} />)
           ) : (
             <p>No posts available.</p>
